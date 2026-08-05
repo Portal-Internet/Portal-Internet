@@ -1,0 +1,10 @@
+.hero {
+  text-align: center;
+  padding: var(--space-6) 0;
+}
+
+.hero p {
+  color: var(--color-text-muted);
+  max-width: 40ch;
+  margin-inline: auto;
+}

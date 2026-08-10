@@ -1,4 +1,6 @@
-import { defineConfig } from 'vite'
+// `defineConfig` vem de 'vitest/config', e não de 'vite': é a versão que
+// conhece a chave `test`. Importar de 'vite' faz o `tsc -b` do build reprovar.
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
 
@@ -25,5 +27,11 @@ export default defineConfig({
         },
       },
     },
+  },
+  // Só funções puras têm teste aqui — validação, máscaras e formatadores.
+  // Nada de DOM, por isso `node` em vez de jsdom.
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
   },
 })

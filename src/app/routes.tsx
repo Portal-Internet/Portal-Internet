@@ -13,6 +13,7 @@ import { RouteActionBar } from './RouteActionBar'
 const PlansPage = lazyPage(() => import('@/pages/plans'), 'PlansPage')
 const CoveragePage = lazyPage(() => import('@/pages/coverage'), 'CoveragePage')
 const ContactPage = lazyPage(() => import('@/pages/contact'), 'ContactPage')
+const ContratacaoPage = lazyPage(() => import('@/pages/contratacao'), 'ContratacaoPage')
 
 export const router = createBrowserRouter(
   [
@@ -25,6 +26,9 @@ export const router = createBrowserRouter(
         { path: 'planos', element: <PlansPage /> },
         { path: 'cobertura', element: <CoveragePage /> },
         { path: 'contato', element: <ContactPage /> },
+        // Rota oculta: chega por link de uso único gerado no CRM. Fora do
+        // sitemap e bloqueada no robots.txt.
+        { path: 'contratar/:token', element: <ContratacaoPage /> },
         // Dentro do Layout: a 404 mantém cabeçalho, rodapé e barra de ações.
         { path: '*', element: <NotFoundPage /> },
       ],

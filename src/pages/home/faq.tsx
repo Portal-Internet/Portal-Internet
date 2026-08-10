@@ -2,7 +2,12 @@ import type { FaqEntry } from '@/shared/components/ui'
 import type { Plan } from '@/shared/types/plan'
 import { CONTACTS } from '@/shared/lib/contacts'
 import { formatPrice } from '@/shared/lib/format'
-import { BUSINESS_PLANS, DEDICATED_PLANS, PLANS, RESIDENTIAL_PLANS } from '@/shared/data/plans'
+import {
+  BUSINESS_PLANS,
+  DEDICATED_PLANS,
+  PLANS,
+  RESIDENTIAL_PLANS,
+} from '@/shared/data/plans'
 
 /** "300 a 700 MEGA, a partir de R$ 120,00" — resumo de um grupo de planos. */
 function summarize(plans: Plan[]): string {

@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Link de contratacao: token de uso unico, so faz sentido para quem
+# recebeu do vendedor. Nada a indexar.
+Disallow: /contratar/
+
 Sitemap: https://portalma.com.br/sitemap.xml

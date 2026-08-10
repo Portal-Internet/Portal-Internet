@@ -75,5 +75,12 @@ const DEFAULT_ACTIONS = (
 /** Barra de ação fixa do mobile. Fica no `app` porque depende das rotas. */
 export function RouteActionBar() {
   const { pathname } = useLocation()
+
+  // Na contratação a barra some: ela é feita para empurrar quem navega em
+  // direção a vendas, e no meio de um formulário só tira a pessoa de lá.
+  if (pathname.startsWith('/contratar')) {
+    return null
+  }
+
   return <MobileActionBar>{ACTIONS[pathname] ?? DEFAULT_ACTIONS}</MobileActionBar>
 }

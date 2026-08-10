@@ -1,0 +1,9 @@
+.secao {
+  padding: var(--section-y) 0;
+}
+
+.provisorio {
+  margin: 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}

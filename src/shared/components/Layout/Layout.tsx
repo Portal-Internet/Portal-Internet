@@ -44,8 +44,19 @@ interface LayoutProps {
   actionBar?: ReactNode
 }
 
+/**
+ * Rotas onde o botão flutuante do WhatsApp sai de cena.
+ *
+ * Ele existe para empurrar quem está navegando em direção a vendas. No meio
+ * de um cadastro a pessoa já é cliente e já decidiu — ali ele só oferece uma
+ * saída no momento errado.
+ */
+const SEM_BOTAO_FLUTUANTE = ['/contratar']
+
 export function Layout({ actionBar }: LayoutProps) {
   useRouteScroll()
+  const { pathname } = useLocation()
+  const mostrarFab = !SEM_BOTAO_FLUTUANTE.some((rota) => pathname.startsWith(rota))
 
   return (
     <>
@@ -58,7 +69,7 @@ export function Layout({ actionBar }: LayoutProps) {
       </main>
       <Footer />
       {actionBar}
-      <WhatsAppFab />
+      {mostrarFab ? <WhatsAppFab /> : null}
     </>
   )
 }

@@ -1,14 +1,24 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { PageHero } from '@/shared/components/Layout/PageHero'
 import { Container } from '@/shared/components/Layout/Container'
 import { Seo } from '@/shared/components/Seo'
 import { PageLoader } from '@/shared/components/ui'
-import { FalhaDeRede, LinkInvalido, useContratacaoLink } from '@/features/contratacao'
+import {
+  ContratacaoForm,
+  FalhaDeRede,
+  LinkInvalido,
+  SucessoContratacao,
+  useContratacaoLink,
+} from '@/features/contratacao'
 import styles from './ContratacaoPage.module.css'
 
 export function ContratacaoPage() {
   const { token } = useParams()
   const { link, carregando, falhaDeRede, tentarDeNovo } = useContratacaoLink(token)
+  const [enviado, setEnviado] = useState(false)
+
+  const heroiDeAviso = enviado || link?.valido === false
 
   return (
     <>
@@ -22,9 +32,9 @@ export function ContratacaoPage() {
       />
 
       {/* O herói acompanha o estado: prometer "preencha seus dados" acima de
-          um aviso de link expirado seria contraditório. */}
-      {link?.valido === false ? (
-        <PageHero title="Cadastro" />
+          um aviso de link expirado, ou depois do envio, seria contraditório. */}
+      {heroiDeAviso ? (
+        <PageHero title={enviado ? 'Tudo certo!' : 'Cadastro'} />
       ) : (
         <PageHero
           title="Quase lá!"
@@ -34,15 +44,18 @@ export function ContratacaoPage() {
 
       <section className={styles.secao}>
         <Container>
-          {carregando ? (
+          {enviado ? (
+            <SucessoContratacao />
+          ) : carregando ? (
             <PageLoader />
           ) : falhaDeRede ? (
             <FalhaDeRede onTentarDeNovo={tentarDeNovo} />
           ) : link?.valido ? (
-            <p className={styles.provisorio}>
-              Formulário em construção — plano {link.planoId}
-              {link.prefillNome ? `, para ${link.prefillNome}` : ''}.
-            </p>
+            <ContratacaoForm
+              link={link}
+              token={token ?? ''}
+              onConcluir={() => setEnviado(true)}
+            />
           ) : (
             <LinkInvalido />
           )}

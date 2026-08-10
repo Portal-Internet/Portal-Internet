@@ -119,7 +119,7 @@ pendente".
 | `prefill_telefone` | `text` | só dígitos |
 | `plano_id` | `text` not null | espelha os ids de `shared/data/plans.ts` |
 | `gerado_por` | `uuid` → `auth.users` | quem gerou |
-| `expira_em` | `timestamptz` not null | default `now() + interval '7 days'` |
+| `expira_em` | `timestamptz` not null | default `now() + interval '72 hours'` |
 | `criado_em` | `timestamptz` | default `now()` |
 | `consumido_em` | `timestamptz` | preenchido no envio |
 
@@ -157,6 +157,50 @@ Um segundo trigger mantém `atualizado_em`.
 - Nenhuma escrita direta de `anon` em tabela. O papel `anon` recebe apenas
   `execute` em `get_contract_link` e `submit_contratacao`.
 - `create_contract_link` recebe `execute` só para `authenticated`.
+
+## Postura de segurança
+
+A decisão de guardar CPF, RG e endereço é deliberada — é o objetivo do sistema. O
+desenho protege esses dados assim:
+
+- RLS nega tudo ao papel `anon`. A chave pública embutida no bundle do site não lê
+  nenhuma linha; ela só executa duas funções, e nenhuma delas devolve dado de cliente.
+- Apenas usuários autenticados, criados à mão no painel do Supabase, leem a tabela.
+- Postgres criptografado em repouso pelo Supabase; tráfego em TLS.
+- A forma das tabelas não aparece no JavaScript do site.
+
+**Por que não há backend.** Um serviço Node intermediário não deixaria o dado
+armazenado mais seguro: seria o mesmo Postgres, com a mesma criptografia, atrás de
+mais um processo para manter. Backend só agregaria em rate limit por IP, captcha, URL
+assinada para upload e log de auditoria de leitura — nada disso é escopo da v1. Se
+abuso do formulário aparecer, uma Edge Function no próprio Supabase cobre esses casos
+sem exigir host novo.
+
+**Onde está a exposição real.** Não é o banco: é a conta do vendedor. Quem tem login
+vê todos os clientes com documento inteiro. Senha fraca ou vazada é o cenário
+concreto. Mitigações na v1:
+
+- **MFA (TOTP) obrigatório** no login. O Supabase Auth já suporta; é configuração mais
+  o fluxo de enrolamento na tela de login.
+- **Documento mascarado na listagem** (`***.456.789-**`), inteiro apenas na ficha
+  aberta. Reduz exposição casual em tela compartilhada e captura de tela.
+- Operacional, fora do código: remover o usuário no painel quando alguém sai da
+  equipe.
+
+## Retenção de dados
+
+Guardar o cadastro de quem contratou é legítimo. A obrigação sob a LGPD é ter prazo
+definido em vez de retenção indefinida por inércia. Padrão adotado:
+
+| Dado | Prazo |
+| --- | --- |
+| Link gerado e nunca preenchido | Apagado 30 dias após `expira_em` |
+| Cliente que cancelou antes de instalar | Anonimizado após 12 meses |
+| Cliente instalado | Mantido enquanto o contrato vigora, mais 5 anos (prazo fiscal) |
+
+Na v1 isso vive como uma função SQL de expurgo (`purge_expired_data`) executada à mão
+ou por `pg_cron`, e não como rotina automática de produção — o volume ainda não
+justifica. O texto de consentimento do formulário declara esses prazos.
 
 ## Funções RPC
 
@@ -250,8 +294,8 @@ própria — busca de dados, validação e estado de envio. É o critério que o
 - Máscaras de CPF, CNPJ, telefone, CEP e data pelo `useInputMask`.
 - Validação de dígito verificador de CPF e CNPJ, formato de e-mail, CEP de 8 dígitos e
   idade mínima de 18 anos.
-- Checkbox de consentimento LGPD obrigatório, com texto curto declarando a finalidade.
-  Grava `consentimento_em`.
+- Checkbox de consentimento LGPD obrigatório, com texto curto declarando a finalidade
+  e os prazos de retenção. Grava `consentimento_em`.
 
 ## CRM — repositório novo
 
@@ -265,7 +309,8 @@ portalinternet-crm/
     app/          App.tsx, routes.tsx, ProtectedRoute.tsx, lazyPage.ts
     pages/        login/, clientes/, cliente-detalhe/
     features/
-      auth/          useSession.ts, LoginForm.tsx
+      auth/          useSession.ts, LoginForm.tsx, MfaChallenge.tsx,
+                     MfaEnroll.tsx, useMfa.ts
       clientes/      ClientesTable, ClientesFilters, StatusBadge,
                      StatusSelect, HistoricoTimeline,
                      useClientes.ts, useClienteStatus.ts
@@ -288,13 +333,15 @@ As migrations moram aqui: o CRM é o dono do banco, e o site apenas consome.
 
 ### Telas da v1
 
-1. **`/login`** — e-mail e senha. Sem cadastro público; usuário novo é criado no painel
-   do Supabase pelo responsável.
+1. **`/login`** — e-mail e senha, seguidos do desafio de MFA. No primeiro acesso, o
+   usuário passa pelo enrolamento do TOTP (QR code) antes de chegar à lista. Sem
+   cadastro público; usuário novo é criado no painel do Supabase pelo responsável.
 2. **`/`** — lista de clientes. Contadores por status no topo, busca por nome, telefone
    ou documento, filtro por status, ordenação por data, e o botão
-   **Gerar link de contratação** em destaque.
-3. **`/clientes/:id`** — ficha completa, troca de status, observações, timeline do
-   histórico e botão de WhatsApp para o cliente.
+   **Gerar link de contratação** em destaque. O documento aparece mascarado
+   (`***.456.789-**`).
+3. **`/clientes/:id`** — ficha completa com o documento inteiro, troca de status,
+   observações, timeline do histórico e botão de WhatsApp para o cliente.
 4. **Modal Gerar link** — três campos (nome, telefone, plano). Ao confirmar, mostra a
    URL e a mensagem pronta, com um botão de copiar para cada.
 
@@ -357,7 +404,11 @@ inexistente e dois envios concorrentes com o mesmo token.
 4. `supabase db push` aplica as migrations.
 5. Em Authentication → Providers, deixar apenas Email ativo e **desligar**
    "Enable email signups". Usuários são criados à mão em Authentication → Users.
-6. `supabase gen types typescript --linked > src/shared/types/database.ts`.
+6. Em Authentication → Multi-Factor, habilitar **TOTP**.
+7. `supabase gen types typescript --linked > src/shared/types/database.ts`.
+
+A chave `service_role` fica só na máquina de quem administra o banco: não entra na
+Vercel nem no site, porque nada na v1 precisa dela.
 
 ### Vercel
 
@@ -376,20 +427,21 @@ segredo da chave. `.env.local` fica no `.gitignore`.
 
 ## Riscos em aberto
 
-- **LGPD.** O sistema passa a guardar CPF, RG e data de nascimento. Precisa de política
-  de retenção acordada com o cliente e de controle de quem tem login. Não é trabalho de
-  código, mas trava a publicação.
 - **Queima de token.** Quem interceptar um link ativo pode enviar um cadastro falso
-  naquele token. A expiração de 7 dias e o uso único limitam o estrago. Se virar
+  naquele token. A expiração de 72 horas e o uso único limitam o estrago. Se virar
   problema real, a saída é a Edge Function com captcha, sem mexer no resto.
+- **Expurgo manual.** A função de retenção existe mas ninguém a chama sozinha na v1.
+  Se o sistema rodar meses sem alguém executá-la, a política vira letra morta.
+  Promover para `pg_cron` assim que o volume justificar.
 - **Preços em dois lugares.** `plans.ts` existe no site e será copiado no CRM;
   divergência silenciosa é questão de tempo. A v1 aceita a duplicação com um comentário
   apontando a origem. Se incomodar, os planos sobem para uma tabela no Supabase.
 
 ## Sequência sugerida de implementação
 
-1. Projeto Supabase, migrations de schema, RLS e RPCs, testadas localmente.
-2. CRM: scaffold, autenticação e rota protegida.
+1. Projeto Supabase, migrations de schema, RLS, RPCs e função de expurgo, testadas
+   localmente.
+2. CRM: scaffold, autenticação com MFA e rota protegida.
 3. CRM: gerar link (modal, RPC, mensagem, copiar).
 4. Site: rota `/contratar/:token`, validação e envio.
 5. CRM: lista, filtros, ficha e mudança de status.

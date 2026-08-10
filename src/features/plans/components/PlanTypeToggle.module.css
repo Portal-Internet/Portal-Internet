@@ -1,0 +1,37 @@
+.toggle {
+  position: relative;
+  display: inline-flex;
+  padding: 5px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line-dark);
+  gap: 4px;
+}
+
+.thumb {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  border-radius: var(--radius-pill);
+  background: var(--pi-400);
+  transition:
+    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle button {
+  position: relative;
+  z-index: 1;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-on-dark);
+  transition: color 0.2s ease;
+}
+
+.active {
+  color: var(--pi-950);
+}

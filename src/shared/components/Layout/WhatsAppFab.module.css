@@ -1,0 +1,30 @@
+.fab {
+  display: none;
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 70;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--color-whatsapp);
+  place-items: center;
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.45);
+  transition: transform 0.2s ease;
+}
+
+.fab:hover {
+  transform: scale(1.06);
+}
+
+.fab svg {
+  width: 30px;
+  height: 30px;
+  fill: #fff;
+}
+
+@media (min-width: 1024px) {
+  .fab {
+    display: grid;
+  }
+}

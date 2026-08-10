@@ -1,7 +1,84 @@
 .main {
   flex: 1;
+}
+
+.container {
   width: 100%;
   max-width: var(--container-width);
-  margin: 0 auto;
-  padding: var(--space-5) var(--space-4);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: var(--space-6);
+  }
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.sectionTight {
+  padding-block: clamp(40px, 6vw, 72px);
+}
+
+.paper {
+  background: var(--color-paper);
+}
+
+.mint {
+  background: var(--pi-50);
+}
+
+.green {
+  background: linear-gradient(160deg, var(--pi-800), var(--pi-950));
+  color: var(--color-text-on-dark);
+}
+
+.green h2,
+.green h3 {
+  color: #fff;
+}
+
+.pageHero {
+  position: relative;
+  background: linear-gradient(150deg, var(--pi-800), var(--pi-950));
+  color: var(--color-text-on-dark);
+  padding-block: clamp(40px, 6vw, 72px);
+  overflow: hidden;
+}
+
+.pageHeroInner {
+  position: relative;
+  z-index: 2;
+}
+
+/*
+ * O limite de largura fica nos filhos, não no container: limitar o próprio
+ * container faria o `margin-inline: auto` centralizar uma caixa de 720px e
+ * o texto sairia do eixo do cabeçalho e das seções da página.
+ */
+.pageHeroInner > * {
+  max-width: 720px;
+}
+
+.pageHero h1 {
+  color: #fff;
+}
+
+.pageHero p {
+  color: var(--color-text-on-dark-muted);
+  font-size: 1.0625rem;
+  margin-bottom: 0;
+}
+
+.breadcrumb {
+  font-size: 0.8125rem;
+  color: var(--color-text-on-dark-muted);
+  margin-bottom: var(--space-4);
+}
+
+.breadcrumb a:hover {
+  color: var(--pi-300);
 }

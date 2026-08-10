@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portalma.com.br/sitemap.xml

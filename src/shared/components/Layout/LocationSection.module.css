@@ -1,0 +1,27 @@
+.mapGrid {
+  display: grid;
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.map {
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* `a.` para vencer a especificidade das classes do Button.module.css. */
+a.mapsLink {
+  align-self: flex-start;
+  min-height: 36px;
+  font-size: 0.8125rem;
+  padding-inline: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  .mapGrid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}

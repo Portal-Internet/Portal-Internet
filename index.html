@@ -1,10 +1,119 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>portalinternet</title>
+    <!-- Caminho relativo: acompanha a base do build (raiz ou subpasta). -->
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./favicon.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f7a22" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://portalma.com.br/" />
+
+    <title>Portal Internet — Internet 100% fibra óptica em São Luís/MA</title>
+    <meta
+      name="description"
+      content="Provedor de internet 100% fibra óptica em São Luís/MA. Dez planos residenciais, empresariais e links dedicados, de 100 a 1000 MEGA, com Wi-Fi grátis e suporte humanizado."
+    />
+
+    <!-- Open Graph / redes sociais -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Portal Internet" />
+    <meta
+      property="og:title"
+      content="Portal Internet — Internet 100% fibra óptica em São Luís/MA"
+    />
+    <meta
+      property="og:description"
+      content="Provedor de internet 100% fibra óptica em São Luís/MA. Dez planos residenciais, empresariais e links dedicados, de 100 a 1000 MEGA, com Wi-Fi grátis e suporte humanizado."
+    />
+    <meta property="og:url" content="https://portalma.com.br/" />
+    <meta property="og:image" content="https://portalma.com.br/og-image.webp" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Portal Internet — Internet 100% fibra óptica em São Luís/MA"
+    />
+    <meta
+      name="twitter:description"
+      content="Provedor de internet 100% fibra óptica em São Luís/MA. Dez planos residenciais, empresariais e links dedicados, de 100 a 1000 MEGA, com Wi-Fi grátis e suporte humanizado."
+    />
+    <meta name="twitter:image" content="https://portalma.com.br/og-image.webp" />
+
+    <!--
+      Imagem do LCP (mascote do hero da home): o preload adianta o download,
+      que sem ele só começa depois do JavaScript montar a página.
+    -->
+    <link
+      rel="preload"
+      as="image"
+      href="./img/garoto-fone-480.webp"
+      imagesrcset="./img/garoto-fone-480.webp 480w, ./img/garoto-fone-720.webp 720w, ./img/garoto-fone.webp 1033w"
+      imagesizes="(min-width: 1024px) 420px, 90vw"
+      fetchpriority="high"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      As fontes entram sem bloquear a renderização: o navegador baixa a folha
+      como "print" (baixa prioridade, não bloqueante) e a aplica quando chega.
+      O <noscript> cobre quem não executa JavaScript.
+    -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!--
+      Dados estruturados da empresa (schema.org). Estáticos de propósito: ficam
+      disponíveis para crawlers que não executam JavaScript (bots de busca e de
+      IA). Mantenha em sincronia com src/shared/lib/contacts.ts se os dados
+      oficiais mudarem.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "InternetServiceProvider",
+        "name": "Portal Internet",
+        "url": "https://portalma.com.br",
+        "logo": "https://portalma.com.br/Logo-320.webp",
+        "image": "https://portalma.com.br/og-image.webp",
+        "telephone": "+55 98 99125-0780",
+        "priceRange": "R$120 - R$5000",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Av. Colares Moreira, 02, Qda 01, sala 410 - Planta Tower",
+          "addressLocality": "São Luís",
+          "addressRegion": "MA",
+          "postalCode": "65075-441",
+          "addressCountry": "BR"
+        },
+        "areaServed": {
+          "@type": "City",
+          "name": "São Luís"
+        },
+        "sameAs": [
+          "https://www.instagram.com/portalma.com.br/",
+          "https://www.facebook.com/people/Portal-Internet/61576553581894/",
+          "https://www.youtube.com/@Portalinternetoficial",
+          "https://www.google.com/maps?cid=9484139846069999747"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

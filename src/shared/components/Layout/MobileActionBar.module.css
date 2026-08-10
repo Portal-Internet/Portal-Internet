@@ -1,0 +1,26 @@
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 70;
+  display: flex;
+  gap: var(--space-2);
+  padding: 10px var(--space-4) calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 20px rgba(5, 58, 18, 0.08);
+}
+
+.bar > * {
+  flex: 1;
+  min-height: 48px;
+}
+
+@media (min-width: 1024px) {
+  .bar {
+    display: none;
+  }
+}

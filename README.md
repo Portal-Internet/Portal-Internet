@@ -1,32 +1,51 @@
-# React + TypeScript + Vite
+# Portal Internet
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Site institucional da **Portal Internet**, provedora de internet fibra óptica em
+São Luís/MA: planos, cobertura, contato e acesso à Central do Assinante.
 
-Currently, two official plugins are available:
+SPA em React 19 + TypeScript, empacotada com Vite. Sem backend: a contratação e a
+consulta de viabilidade acontecem pelo WhatsApp.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Rodando
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Scripts
+
+| Script                    | O que faz                                                                   |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `npm run dev`             | Servidor de desenvolvimento                                                 |
+| `npm run build`           | Typecheck + build de produção (base `/`)                                    |
+| `npm run build:hostgator` | Build para a subpasta `/projetos/PortalInternet/`                           |
+| `npm run preview`         | Serve o `dist/` gerado                                                      |
+| `npm run images`          | Regera os derivados das imagens (variantes, logo branca, og-image, favicon) |
+| `npm run lint`            | oxlint                                                                      |
+| `npm run format`          | Prettier                                                                    |
+
+## Publicação
+
+O `dist/` é estático e vai para um Apache comum (HostGator), sem Node no servidor.
+O `public/.htaccess` entra no build e faz qualquer rota cair no `index.html` — sem
+ele, abrir `/planos` direto dá 404.
+
+Para publicar na raiz de um domínio use `npm run build`; para a subpasta atual,
+`npm run build:hostgator`. Os nomes dos assets têm hash e mudam a cada build, então
+**envie todo o conteúdo de `dist/`**.
+
+## Estrutura
+
+```
+design/     arte original da marca (não entra no build)
+public/     arquivos servidos como estão + imagens derivadas
+scripts/    utilitários de build (geração de imagens)
+src/
+  app/      bootstrap: rotas, providers
+  pages/    uma pasta por rota
+  features/ módulos de negócio (planos, cobertura, avaliações…)
+  shared/   UI, hooks, dados e utilitários reaproveitados
+```
+
+Detalhes de arquitetura, convenções e decisões estão em `CLAUDE.md`.

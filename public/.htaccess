@@ -1,0 +1,44 @@
+# Portal Internet — SPA em hospedagem Apache (HostGator)
+#
+# O roteamento é client-side: só existe um index.html de verdade. Sem estas
+# regras, abrir /planos direto na barra de endereços dá 404, porque o Apache
+# procura um arquivo com esse nome.
+#
+# As regras são relativas à pasta onde este arquivo está, então funcionam
+# tanto na raiz do domínio quanto numa subpasta, sem precisar de RewriteBase.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Arquivo ou diretório que existe de verdade é servido normalmente
+  # (assets com hash, imagens, robots.txt, sitemap.xml...).
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Qualquer outra rota entrega o index.html e o React assume dali.
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Cache longo para os assets com hash no nome — o nome muda a cada build,
+# então nunca servem conteúdo velho.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/webp "access plus 6 months"
+  ExpiresByType image/png "access plus 6 months"
+  ExpiresByType image/svg+xml "access plus 6 months"
+</IfModule>
+
+# O index.html precisa ser sempre revalidado, senão o navegador continua
+# apontando para os assets do build anterior depois de uma publicação.
+<FilesMatch "index\.html$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, must-revalidate"
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

@@ -1,0 +1,220 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(15, 122, 34, 0.35);
+}
+
+.featured {
+  background: linear-gradient(168deg, var(--pi-800), var(--pi-950));
+  border-color: rgba(107, 220, 92, 0.4);
+  color: var(--color-text-on-dark);
+  box-shadow: var(--shadow-lg);
+}
+
+.flag {
+  position: absolute;
+  top: -13px;
+  left: var(--space-5);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--pi-400);
+  color: var(--pi-950);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.featured .name {
+  color: var(--pi-300);
+}
+
+.speed {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  line-height: 1;
+  margin-bottom: var(--space-3);
+}
+
+.speed b {
+  font-size: clamp(2.75rem, 11vw, 3.5rem);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.speed span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.featured .speed span {
+  color: var(--color-text-on-dark-muted);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-display);
+  margin-bottom: var(--space-1);
+}
+
+.price i {
+  font-style: normal;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.price b {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.price em {
+  font-style: normal;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.featured .price i,
+.featured .price em {
+  color: var(--color-text-on-dark-muted);
+}
+
+.forWhom {
+  font-size: 0.875rem;
+  color: var(--pi-600);
+  font-weight: 600;
+  margin-bottom: var(--space-5);
+}
+
+.featured .forWhom {
+  color: var(--pi-300);
+}
+
+.features {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex: 1;
+}
+
+.features li {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.featured .features li {
+  color: var(--color-text-on-dark-muted);
+}
+
+.check {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--pi-100);
+  color: var(--pi-600);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.featured .check {
+  background: rgba(107, 220, 92, 0.18);
+  color: var(--pi-300);
+}
+
+/*
+ * Fluxo inline de propósito: com `display: flex` cada trecho de texto e o <b>
+ * viram itens separados e, no mobile, quebram em colunas paralelas — a frase
+ * fica ilegível ("Todos os | 100% fibra | da central"). Aqui é um parágrafo
+ * normal que só quebra no fim da linha.
+ */
+.gridNote {
+  margin-top: var(--space-5);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.gridNote .check {
+  display: inline-grid;
+  margin: 0 var(--space-2) 0 0;
+  vertical-align: -0.3em;
+}
+
+.gridNote b {
+  color: var(--pi-600);
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid[data-count='2'] {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 780px;
+    margin-inline: auto;
+  }
+
+  .grid[data-count='4'] {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

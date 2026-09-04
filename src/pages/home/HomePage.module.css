@@ -1,10 +1,215 @@
-.hero {
-  text-align: center;
-  padding: var(--space-6) 0;
+/* ---------- Hero ---------- */
+.heroWrap {
+  position: relative;
+  background:
+    radial-gradient(ellipse 90% 70% at 85% 10%, rgba(53, 192, 42, 0.22), transparent 60%),
+    linear-gradient(155deg, var(--pi-800) 0%, var(--pi-950) 100%);
 }
 
-.hero p {
-  color: var(--color-text-muted);
-  max-width: 40ch;
+.hero {
+  position: relative;
+  color: var(--color-text-on-dark);
+  padding-top: clamp(36px, 6vw, 72px);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-items: end;
+  gap: var(--space-5);
+}
+
+.hero h1 {
+  margin-bottom: var(--space-4);
+  color: #fff;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--pi-300);
+}
+
+.heroSub {
+  font-size: clamp(1rem, 2.3vw, 1.1875rem);
+  color: var(--color-text-on-dark-muted);
+  max-width: 46ch;
+}
+
+.pillars {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line-dark);
+}
+
+.pillars li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.9375rem;
+  color: var(--color-text-on-dark-muted);
+}
+
+.mascot {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto -36px;
+  max-width: 420px;
+  width: 100%;
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.45));
+}
+
+.mascot img {
+  width: 100%;
+  height: auto;
+}
+
+/* O selo de velocidade fica acima do mascote, no fluxo — nunca por cima dele. */
+.heroAside {
+  display: grid;
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.speed {
+  margin-bottom: calc(var(--space-2) * -1);
+}
+
+/* ---------- Faixa de pilares ---------- */
+.waveDivider {
+  position: relative;
+  z-index: 3;
+  display: block;
+  line-height: 0;
+  margin-bottom: -1px;
+}
+
+.waveDivider svg {
+  display: block;
+  width: 100%;
+  height: clamp(24px, 5vw, 48px);
+}
+
+.waveDivider path {
+  fill: var(--pi-400);
+}
+
+.strip {
+  position: relative;
+  z-index: 4;
+  background: var(--pi-400);
+  color: var(--pi-950);
+  padding-block: var(--space-4);
+}
+
+.stripInner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4) var(--space-6);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-align: center;
+}
+
+/* ---------- Bloco com mascote ---------- */
+.splitMedia {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.splitImage {
+  position: relative;
+  max-width: 460px;
   margin-inline: auto;
+}
+
+.splitImage::before {
+  content: '';
+  position: absolute;
+  inset: 12% -6% -2%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(53, 192, 42, 0.24), transparent 70%);
+}
+
+.splitImage img {
+  position: relative;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 20px 32px rgba(5, 58, 18, 0.25));
+}
+
+.advantages {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* ---------- Textos auxiliares ---------- */
+.centerNote {
+  text-align: center;
+  margin-top: var(--space-6);
+  font-size: 0.9375rem;
+}
+
+.link {
+  color: var(--pi-600);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  color: var(--pi-700);
+}
+
+.ctaBlock {
+  text-align: center;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-5);
+}
+
+@media (max-width: 1023.98px) {
+  .mascot {
+    transform: translateX(-20px);
+  }
+}
+
+@media (min-width: 480px) {
+  .pillars {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .splitMedia {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroInner {
+    grid-template-columns: 1.06fr 0.94fr;
+    gap: var(--space-7);
+  }
+
+  .mascot {
+    max-width: 100%;
+  }
+
+  .pillars {
+    grid-template-columns: 1fr;
+    max-width: 430px;
+  }
 }

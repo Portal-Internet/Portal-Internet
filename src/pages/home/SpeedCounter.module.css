@@ -1,0 +1,38 @@
+.counter {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0;
+  text-align: center;
+}
+
+.counter span {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-on-dark-muted);
+}
+
+/* Largura reservada para os 4 dígitos: o contador não empurra o "MB" ao subir. */
+.counter b {
+  min-width: 4ch;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 6vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pi-300);
+  text-shadow: 0 0 28px rgba(53, 192, 42, 0.45);
+}
+
+.counter em {
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pi-300);
+}

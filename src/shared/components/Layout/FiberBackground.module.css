@@ -1,0 +1,56 @@
+/* Camada decorativa fixa, atrás de todo o conteúdo. Só fica visível onde
+   não há um fundo opaco em cima (seções tone="default", vãos do body). */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.strand {
+  position: absolute;
+  left: -15%;
+  width: 130%;
+  height: 2.5px;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(90deg, rgba(15, 122, 34, 0.1), rgba(15, 122, 34, 0.1)),
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(53, 192, 42, 0.55) 45%,
+      rgba(169, 237, 161, 0.9) 50%,
+      rgba(53, 192, 42, 0.55) 55%,
+      transparent 100%
+    );
+  background-size:
+    100% 100%,
+    220% 100%;
+  background-position:
+    0 0,
+    -140% 0;
+  filter: drop-shadow(0 0 2px rgba(53, 192, 42, 0.4));
+  animation-name: fiberPulse;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fiberPulse {
+  from {
+    background-position:
+      0 0,
+      -140% 0;
+  }
+  to {
+    background-position:
+      0 0,
+      140% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    display: none;
+  }
+}

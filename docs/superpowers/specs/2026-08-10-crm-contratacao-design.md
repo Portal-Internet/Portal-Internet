@@ -66,7 +66,7 @@ Três peças, nenhuma delas um servidor novo:
 | Peça | O que é | Onde roda |
 | --- | --- | --- |
 | Site PortalInternet | repositório existente, ganha a rota `/contratar/:token` | HostGator (como hoje) |
-| CRM | repositório novo, Vite SPA | Vercel |
+| CRM | repositório novo, Vite SPA | Netlify |
 | Supabase | Postgres, Auth, RLS e três RPCs | Supabase |
 
 ### Fluxo de dados
@@ -180,8 +180,14 @@ sem exigir host novo.
 vê todos os clientes com documento inteiro. Senha fraca ou vazada é o cenário
 concreto. Mitigações na v1:
 
-- **MFA (TOTP) obrigatório** no login. O Supabase Auth já suporta; é configuração mais
-  o fluxo de enrolamento na tela de login.
+- **MFA (TOTP) implementado, porém desligado.** O recurso exige plano Pro no
+  Supabase, que o projeto não tem. O enrolamento e o desafio estão prontos e
+  testados; `VITE_MFA_HABILITADO` liga os dois quando o plano mudar. Até lá a conta
+  do vendedor é protegida só pela senha — o que torna a próxima linha o item mais
+  importante desta seção, e não uma formalidade.
+- **Senha longa e exclusiva por vendedor**, com o mínimo elevado para 12 caracteres
+  na configuração de Auth. Sem segundo fator, uma senha reutilizada que vaze em
+  outro serviço abre a lista inteira de clientes com documento.
 - **Documento mascarado na listagem** (`***.456.789-**`), inteiro apenas na ficha
   aberta. Reduz exposição casual em tela compartilhada e captura de tela.
 - Operacional, fora do código: remover o usuário no painel quando alguém sai da
@@ -325,7 +331,7 @@ portalinternet-crm/
     migrations/   0001_schema.sql, 0002_rls.sql, 0003_rpc.sql
     config.toml
   .env.example
-  vercel.json     # rewrite de SPA
+  netlify.toml     # rewrite de SPA
   CLAUDE.md
 ```
 
@@ -333,9 +339,10 @@ As migrations moram aqui: o CRM é o dono do banco, e o site apenas consome.
 
 ### Telas da v1
 
-1. **`/login`** — e-mail e senha, seguidos do desafio de MFA. No primeiro acesso, o
-   usuário passa pelo enrolamento do TOTP (QR code) antes de chegar à lista. Sem
-   cadastro público; usuário novo é criado no painel do Supabase pelo responsável.
+1. **`/login`** — e-mail e senha. Com `VITE_MFA_HABILITADO=true`, vem em seguida o
+   desafio de TOTP, e no primeiro acesso o enrolamento por QR code; com o valor
+   padrão `false`, a senha basta. Sem cadastro público; usuário novo é criado no
+   painel do Supabase pelo responsável.
 2. **`/`** — lista de clientes. Contadores por status no topo, busca por nome, telefone
    ou documento, filtro por status, ordenação por data, e o botão
    **Gerar link de contratação** em destaque. O documento aparece mascarado
@@ -404,20 +411,24 @@ inexistente e dois envios concorrentes com o mesmo token.
 4. `supabase db push` aplica as migrations.
 5. Em Authentication → Providers, deixar apenas Email ativo e **desligar**
    "Enable email signups". Usuários são criados à mão em Authentication → Users.
-6. Em Authentication → Multi-Factor, habilitar **TOTP**.
+6. Em Authentication → Policies, elevar o comprimento mínimo de senha para 12. Sem
+   segundo fator, a senha é a única defesa da conta.
 7. `supabase gen types typescript --linked > src/shared/types/database.ts`.
 
-A chave `service_role` fica só na máquina de quem administra o banco: não entra na
-Vercel nem no site, porque nada na v1 precisa dela.
+O passo de habilitar TOTP em Authentication → Multi-Factor fica para quando o projeto
+migrar para o plano Pro; o recurso não existe no plano atual.
 
-### Vercel
+A chave `service_role` fica só na máquina de quem administra o banco: não entra na
+Netlify nem no site, porque nada na v1 precisa dela.
+
+### Netlify
 
 1. Importar o repositório `portalinternet-crm`. O preset Vite é detectado sozinho.
 2. Variáveis de ambiente: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
-   `VITE_SITE_URL` (base do link de contratação).
-3. `vercel.json` com rewrite de todas as rotas para `/index.html` — sem isso, um
+   `VITE_SITE_URL` (base do link de contratação) e `VITE_MFA_HABILITADO=false`.
+3. `netlify.toml` com rewrite de todas as rotas para `/index.html` — sem isso, um
    refresh em `/clientes/123` dá 404.
-4. A chave `service_role` **não** entra na Vercel. Nada no CRM precisa dela.
+4. A chave `service_role` **não** entra na Netlify. Nada no CRM precisa dela.
 
 ### Site
 
@@ -445,4 +456,4 @@ segredo da chave. `.env.local` fica no `.gitignore`.
 3. CRM: gerar link (modal, RPC, mensagem, copiar).
 4. Site: rota `/contratar/:token`, validação e envio.
 5. CRM: lista, filtros, ficha e mudança de status.
-6. Deploy na Vercel, publicação do site e teste ponta a ponta com um link real.
+6. Deploy na Netlify, publicação do site e teste ponta a ponta com um link real.

@@ -1,0 +1,40 @@
+.toggleWrap {
+  margin-top: var(--space-6);
+}
+
+.centerNote {
+  text-align: center;
+  margin-top: var(--space-6);
+  font-size: 0.9375rem;
+}
+
+.linkButton {
+  color: var(--pi-600);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  color: var(--pi-700);
+}
+
+.highlights {
+  margin-top: var(--space-6);
+}
+
+.ctaBlock {
+  text-align: center;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-5);
+}

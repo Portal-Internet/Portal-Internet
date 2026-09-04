@@ -1,0 +1,30 @@
+/*
+ * Ocupa o lugar da página no fluxo, e não como overlay fixo: assim o rodapé
+ * não sobe enquanto o chunk carrega para descer de novo depois (layout shift).
+ */
+.loader {
+  min-height: calc(100vh - var(--header-height));
+  display: grid;
+  place-items: center;
+  background: #fff;
+}
+
+.animation {
+  width: 96px;
+  height: 96px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--pi-100);
+  border-top-color: var(--pi-600);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
